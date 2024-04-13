@@ -1,0 +1,323 @@
+when creating a new device in android studio it must have the google play icon becuase we will need it for expo app  
+------------------------------
+To create a new typescript expo react native project:
+npx create-expo-app -t expo-template-blank-typescript
+
+To run on andriod studio emaluator: 
+1- start andriod studio emaluator and you willl see the phone
+2- in the project: npm run android          
+
+To run on actuall iphone:
+1- npx expo start
+2- scan in expo app 
+
+To run on acuall andorid:
+1- npx expo start
+2- scan in expo app 
+-----------------
+in styling let say we have this:
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dummyText:{
+    
+  }
+});
+not that dummyText or container must be an object
+----------------------------
+Text : <Text></Text>
+textInput: <TextInput />
+button: <Button title=''/>
+------------------------------
+flex: 1 means take all the width you can, instead of just enough to fill the text
+---------------------------
+The button does not have a style prop, it only have the color props which in andoroiid set the the backgorund color and in ios set the text color , however note that in andoroid the text color is always white so choose a background color that work with that 
+---------------------------
+in react native for a text input we use onChangeText like this:  <TextInput onChangeText={goalInputHandler} />
+and then in the function parameter we don't use event instead we use a text prop like this 
+  function goalInputHandler(TheText){
+    setTextInput(TheText)
+  }
+which give us dirctly the text 
+
+we can also specify the max length of that input by using maxLength={number like 10}
+------------------------------------
+in text Input for password or sensetive data it's important to use the prop secureTextEntry={true} like this:   <TextInput secureTextEntry={secure} />
+------------------------------
+insteaed of onClick we use onPress={functionName}
+------------------------------
+The Text does not support border radius in IOS, however we can style the View that support it in both IOS and android
+-----------------------------------------------------------------------
+we can't map to h1 or div ofcourse but we can map to Text or Button or View like this: 
+        <Text>List of goal</Text>
+        {courseGoals.map((item)=>{
+          return <Text>{item}</Text>
+        })}
+-------------------------------------------------------------------------
+In react native the father elemnt doesn't give style to the inner elements: for example a View that has color red and inside it a text then the text will not have a red color unless we add it to it explicitly (unlike html)
+--------------------------------------------------------------------
+The View does not support scrolling , only the ScrollView allow scolling
+-------------------------------------
+FlatList can be used instead of ScrollView but the diffrence is that FlatList will render only the current visible items (like tiktok) while ScrollView will render all the list regradless whether user view it. let say we have a list of goals then note data is the variable goals and itemData will be object from FlatList itself where each one hold the actuall item itemData.item and have other properties:
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  }]
+ <FlatList
+        data={DATA}
+        renderItem={({item}) => <Item title={item.title} />}
+        keyExtractor={item => item.id}
+      />
+--------------------------------------------------------------------------
+in the textInput  we can have the value same as in web to make controlled components
+-----------------------------------------------------
+Let say we want to make when click on a view do something . in web we can use onClick but here we must use Pressable like this:
+<Pressable onPress={} >
+   <View>
+   </View>
+</Pressable>
+---------------------------------------------
+in expo if you want all screens pages to be a certain background color you can go to app.json and add inside the expo obejct add "backgroundColor": "black", or any other color , however in works in screens not in modal
+----------------------------
+The course says that you must put StatusbAR IN THE APP BUT I don't know if it's nessecray so be caredful and put it, but let say you want a light one then <StatusBar style='light' />
+------------------------------
+ we don't have boxShhadow in react native instead use elevation for android and  in ios use ShadowColor and shadowOffset like this:
+const styles = StyleSheet.create({
+  shad: {
+    elevation: 8,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.25
+  }
+});
+-----------------------------  
+To show a number keyboard:  <TextInput keyboardType="number-pad" /> however the value will give us is a number in string so use a string useState or use Number() before puttig in state
+-------------------------------------
+To prevent auto captialize useful in email inout to prevent auto capital the first char:  <TextInput autoCapitalize="none" />
+-------------------------------------- 
+You can create you own alert by using View or Modal or you can use aleardy created Alert in react native like this: The 2 objects are button and when click they will close the alert regardless, whowver if we pass onPress a thing then this will alos be exctued after closnig the alert so we can make the onPress call a function for example
+
+Alert.alert('Alert Title', 'Invalid password length', [
+      { //first button 
+        text: 'Cancel', //any text
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel', //There is multiple options for this
+      },
+      {text: 'OK', onPress: function1w},//second button 
+    ]);
+------------------------------------------------------------------
+<SafeAreaView> is very useful for new phones that have notch camera so put or view and text inside it so that noting get to the cornernear the notch
+------------------------------------------------------------------
+you can add multiple styles to the same elemnts, like  this as array and thge right element can overflow the left elements if they are about the same thing (like css classes)
+<Text style={[styles.first, styles.second]} ></Text>
+------------------------------------------------------------------
+There is a icons prebuilt in expo called vector icons and you can use them like this The name is not optional and it must match the actuall name of icons :
+import Ionicons from '@expo/vector-icons/Ionicons';
+Then : 
+<Ionicons name="md-checkmark-circle" size={32} color="green" /> //Ionicons is the family name and md-checkmark-circle is name for that indivual icons
+
+more detail click on any icon from this: 
+https://icons.expo.fyi/Index
+------------------------------------------------------------------- 
+You can use the default font, which I don't think is bad or you can change but it't a little  bit need work (watch video 70) or use docs: https://docs.expo.dev/versions/latest/sdk/font/ 
+---------------------------------------------------------------
+we can use Dimensions to make style conditioining based on screen size for example: 
+import {View, StyleSheet, Text, Dimensions} from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: deviceWidth < 380 ? 12 : 24,
+    margin: deviceWidth < 380 ? 12 : 24,
+  },
+  numberText: {
+    color: Colors.accent500,
+    fontSize: deviceWidth < 380 ? 28 : 36,
+  },
+});
+---------------------------------------------------
+You can show diffrent things based on iphone or android by using Platform for example: 
+import {
+  Platform
+} from 'react-native';
+
+Then use it anywhere like this: 
+if(Platform.OS === 'ios' ){
+}else{
+}
+or use it in style or rendering or anything as conditional like this  color: Platform.OS === 'ios' ? 'red' : 'blue'
+------------------------------------------------------------------------------------
+There is a very few cases where the keyboard overlay the view then we can use KeyboardAvoidingView and ScrollView  like this (make sure the styling is also same)
+ <ScrollView style={{flex: 1}}>
+      <KeyboardAvoidingView style={{flex: 1}} behavior="position">
+	{/* Any View or text you want */}
+      </KeyboardAvoidingView>
+</ScrollView>
+------------------------------------------------------------
+we can specify how many elements appear in the row of FlatList by using the prop numColumns={2} the 2 is just exmaple for 2 item is the each row:
+------------------------------------------
+Top use react navaigation go here and install required pacakges: https://reactnavigation.org/docs/getting-started/ 
+They currently are :
+npm install @react-navigation/native
+and npx expo install react-native-screens react-native-safe-area-context
+
+Then in app.js (The main file) import : 
+import { NavigationContainer } from '@react-navigation/native';
+and wrap your elements: 
+export default function App() {
+  return (
+    <NavigationContainer>{/* Rest of your app code */}</NavigationContainer>
+  );
+}
+
+Then if you go to next page of docs they say install: npm install @react-navigation/native-stack
+Then also in app.js : import { createNativeStackNavigator } from '@react-navigation/native-stack';
+and const Stack = createNativeStackNavigator();
+Then add <Stack.Navigator> and wrap it around screens: 
+and for each screen use  <Stack.Screen name="TheUniqueName" component={HomeScreen} /> //the name must be unique and it will be used later for linking
+
+The final result in app.js be lieke this (we only have one page here): 
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import CategoriesScreen from './screens/CategoriesScreen';
+
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <>
+      <StatusBar style='light' />
+      <NavigationContainer>
+          <Stack.Navigator>
+              <Stack.Screen name="Home" component={CategoriesScreen} />//The first screen is the inital screen when app load
+              <Stack.Screen name="Details" component={DetailsScreen} />//This is exmaple of a component be like a screen and have the link of MealsCategories
+          </Stack.Navigator>
+      </NavigationContainer>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {},
+});
+
+To navigate between screens we should use an object called navigation which we can get using 2 ways
+	1-  at each Stack.Screen you will get automatically a prop called navigation so we can use it dirctly and this prop have some functions that help us naviagte between screens like this for eaxmple navigation.navigate allow us toi move just like naviagate() that is used in react router  . see this example :
+
+	function DetailsScreen({ navigation }) { 
+  	return (
+    		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      			<Text>Details Screen</Text>
+      			<Button title="Go to Details... again" onPress={() => navigation.navigate('Details')} />
+    		</View>);
+	}
+
+	2- use the useNavigation hooks to get this object like this: 
+	import { useNavigation } from '@react-navigation/native';
+	
+ 	then use it like this: function MyBackButton() {
+  		const navigation = useNavigation();
+
+  		return (
+    		<Button title="Back" onPress={() => {navigation.navigate('Details')}} />
+  		);
+		}
+
+Also the navigation object in both cases can also return to previous page by using: navigation.goBack(); //we can use in a button or function or anywhere we want
+--------------------------------------------------------------
+ we can pass data (param) between pages that we navigate : navigation.navigate('RouteName', { /* params go here */ })
+example:  navigation.navigate('Details', {
+            itemId: 86,
+            otherParam: 'anything you want here',
+          });
+Then we can use this data like this:
+function DetailsScreen({ route, navigation }) { //route is a prop we autamatclly gets when we pass params
+  /* 2. Get the param */
+  const { itemId, otherParam } = route.params; //take the data from the param by destructring
+  return (
+   {/* whatever */}
+  );
+}
+-----------------------------------------------
+To remove the head bar from all pages (Because I think it's ugly ). we can use screenOptions={{ headerShown: false }} in the Stack.Navigator liek this:
+
+export default function App() {
+  return (
+    <>
+      <StatusBar style='light' />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="MealsCategories" component={CategoriesScreen}  /> //The initial page
+              <Stack.Screen name="MealsOverviewr" component={MealsOverviewScreen} /> 
+          </Stack.Navigator>
+      </NavigationContainer>
+    </>
+  );
+}
+ 
+-------------------------------------------------
+we can create tabs bar to move between screens just like the bottom tabs in insta and tiktok , The docs of this is: https://reactnavigation.org/docs/tab-based-navigation
+Summary:
+1-install npm install @react-navigation/bottom-tabs
+2- we use a little firrent app.js way like this:
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} /> 
+        <Tab.Screen name="Settings" component={SettingsScreen} /> 
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+---------------------------------------------------------
+We can create a spinner loading component and use it if we are fetching api (first code is the function second is the usage):: 
+
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+
+export default function LoadingOverlay() {
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color="white" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: "black",
+  },
+});
+
+we use it like this: 
+const [isFetching, setisFetching] = useState(true); 
+if(isFetching){
+	return <LoadingOverlay /> }
+else{
+	return <View></View>
+}

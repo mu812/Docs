@@ -1,0 +1,64 @@
+
+1- npm init 
+
+2- npm i -D typescript ts-node @types/node
+
+3- npx tsc --init
+
+4- then copy this and put it in the tsconfig.json (note: only the folders list in the include src will be included :
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es2016",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": false, // Disable source map generation
+    "outDir": "./dist",
+    "removeComments": true, // Disable comments generation
+    "importsNotUsedAsValues": "remove",
+    "stripInternal": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    /* Type Checking */
+    "strict": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "typeRoots": [
+      "./src/types"
+    ]
+  },
+  "exclude": [
+    "resources",
+    "node_modules",
+    "**/*.env" // Exclude .env files
+  ],
+  "include": [
+    "./.eslintrc.js",
+    "./vitest.config.ts",
+    "./src"
+  ]
+}
+
+
+5-  create a folder called src and inside it create the app.ts file which will be the main file as usual  
+
+6-  npm install fastify dotenv 
+
+7- important create the env file in th root (not inside the src)
+
+8-  npm i -D concurrently nodemon
+
+9- update the main in package.json file to be "main": "dist/index.js"
+
+10- update the scripts in the package.json file to be :  
+
+"scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q ./dist/index.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+
+11 - write the codes in the src folder just as usual but instead of nodemon app.js use npm run dev, also the ruotes and controllers folder  ando so on also should be in the src

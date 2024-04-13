@@ -1,0 +1,255 @@
+<React.Fragment> can be used to put thing next to each other in react.. becauase in react there is only one parent div in compponent but sometimes we don't want to create a lot of nested div then we can just do <React.Fragment>whateever inside </React.Fragment> and this will work fine 
+---------------------------------------------------
+default props can be used if we don't pass a props to the compoenent but want it to have a value by default
+example: 
+function Card(props) {
+    const styles = {
+        backgroundColor: props.cardColor
+    }
+    return (<div style={styles}></div> )
+}
+
+Card.defaultProps = {
+    cardColor: "blue" 
+}
+// blue will be a default value for cardColor prop but if in the rendering we passed value then the blue will be ignored like <Card cardColor="red" />
+--------------------------------------------------------
+There is a props libraray that can help you in developmenr time only and not in real run time :
+import propTypes from "prop-types"
+for example during developement you can specify the type of prop
+emaple : 
+Card.propTypes = { //This is in the Card class component
+    cardColor: PropTypes.string
+}
+
+now if I did <Card cardColor="s" /> then fine but if I did mistakly <Card cardColor={1} /> then it will show a warning so it is an optional library but it can help me not mistake accedantly 
+-------------------------------------------------
+Higher-order component is a function that takes a component and returns a new component with additional things. It's a little hard and the scrimba instrctor says that mostly in real work you will not use it and instead you will use React hooks but this can be needed if you work on old code that still use this. 
+-------------------------------------------
+props can even be a function, example: <Star name={function() {return "Hey there"}} /> and in the compoemnet 
+export function Star(props) {
+    return <h1>Hi {props.name()}</h1> 
+}
+
+another more complex example: 
+ <Example name={function(name) {return <h1>Hey {name}</h1>}}/>
+now in the component class
+function Star(props) {
+    return (
+        <div>
+            {props.name("Sarah")}
+        </div>
+    )
+}
+this will show Hey Sarah
+-----------------------------------------
+{props.children} can be used by putting it inside any component and then in any other class when we are using that componet we can put any thing inside it and it will render .
+example: 
+export function Star(props){
+return (
+<div>
+<h1>Hello</h1>
+{props.children}
+</div>)
+} 
+
+now we can use it like this, as it will render card inside the Star component:
+<Star> </Card> </Star>
+--------------------
+In real scenarios we will never implement shouldComponentUpdate by our selfes and mostly react automatctly will do it by itself
+----------------------------------------
+React.PureComponent is only avalable for class component and not for functional component and actaully little performance difreence does'not matter
+-----------------------------------------
+In functional compoent we can optimze performance very easily by React.memo, example:
+export default React.memo(function Parent(props) { 
+return (<h1>Hello</h1>)} ; 
+----------------------------------------
+React context can be used to share state between diffrent components that are not close, meaning for example let's say we have the app component which is the parent have a dark mode then any other component even far a head can have that by setting the app as provider and any componet than want as consumer
+---------------------------------------
+React context can replace redux in a lot of projects and it's a state mangement tool for complex state bwteen far components
+---------------------------------------- 
+The most 2 important thing in context is: 
+React.useContext and React.createContext
+------------------------
+exmplle of creating context in App:
+first create a seperate file for context and include in it the name like this themeContext.js file: 
+
+import React, {useState} from "react"
+const ThemeContext = React.createContext()
+
+function ThemeContextProvider(props) {
+    const [theme, setTheme] = useState("dark")
+    
+    function toggleTheme() {
+        setTheme(prevTheme => {
+            return prevTheme === "light" ? "dark" : "light"
+        })
+    }
+    
+    return (
+        <ThemeContext.Provider value={{theme: theme, toggleTheme: toggleTheme}}>
+            {props.children} //This is a must so that what ever inside the <ThemeContextProvider> will be renderd as we will see in App
+        </ThemeContext.Provider>
+    )
+}
+
+export {ThemeContextProvider, ThemeContext} //the first will be used as provider in index.js and the second as consumer in button.js
+
+
+then in index.js we will first import the app component and the import context, then wrap the app inside the context porvider: 
+
+import React from "react"
+import ReactDOM from "react-dom"
+
+import App from "./App"
+import {ThemeContextProvider} from "./themeContext"
+ReactDOM.render(
+    <ThemeContextProvider>
+        <App />
+    </ThemeContextProvider>, 
+    document.getElementById("root")
+)
+
+
+
+now as a consumer in this example we can use this state in button component and make the button toggle the state like this: 
+
+import React, {useContext} from "react"
+import {ThemeContext} from "./themeContext"
+
+export default function Button(props) {
+    const context = useContext(ThemeContext)
+    return (
+        <button onClick={context.toggleTheme} className={`${context.theme}-theme`} > Switch Theme </button> //The button will know the theme and can toggle
+    )    
+}
+-----------------------------------------------
+useMemo and useCallback are used for optimazation, and the scrimba instrcutor says that you don't need them unless you have a problem with performance
+----------------------------------------------
+Try to avoid using id in React projects it's not neccesarly gonna do a problem but sometime if you rendered multiple components mayabe some of them will have the same id if you are not careful 
+----------------------------------------
+useRef can be used to know which dom we are using, example:
+const inputRef = useRef(null)
+then we can use it :
+<input ref={inputRef} type="text" name="todo" />
+
+know what we can do is : 
+inputRef.current which will have alot of methods, one of them is inputRef.current.focus() which will return the focus to this input text
+----------------------------------------
+custom hooks are so easy but I don't know if we will actually need them , example: 
+
+first create a sperate file for this hooks called useCounter.js :
+
+import {useState} from "react"
+export default function useCounter() {
+    const [count, setCount] = useState(0)
+   
+    function increment() {
+        setCount(prevCount => prevCount + 1)
+    }
+    
+    return {count: count, increment: increment}
+}
+
+now we can use it in app.js like this: 
+
+import React, {useState} from "react"
+import useCounter from "./useCounter"
+
+function App() {
+    const {count, increment} = useCounter() // destructor the things we want from the hooks object 
+    return (
+        <div>
+            <h1>The count is {count}</h1> //show the count varaible state
+            <button onClick={increment}>Add 1</button> //use the hooks incresment function to increase the state varaible
+        </div>
+    )
+}
+----------------------------------------------------------------
+You should install react-router-dom
+and you should always use BrowserRouter from the router like this import {BrowserRouter as Router} from "react-router-dom"
+then in index.js wrap the Router on the App component and put it in the html:
+ReactDOM.render(
+    <Router>
+        <App />
+    </Router>, 
+    document.getElementById("root")
+)
+
+then in the App.js use React router like this: 
+import {Link, Routes, Route} from "react-router-dom"
+export default function App() {    
+    return (
+        <div>
+            <Link to="/">Home</Link> //roueter link for home page
+            <Link to="/about">About</Link> //router link for about page
+
+	    <Routes>
+                <Route path="/" element={<Home />} /> //render the <Home /> componet if path is excat /
+                <Route path="/about" element={<About />} /> // render <About /> component if path start with /About 
+	   </Routes>
+        </div>
+    )
+}
+-----------------------------------------------------------
+in index.html rember when you import the index.js to put the src with / like:<script src="/index.js"></script> 
+------------------------------------------------------------
+Important : You can put the links inside the components but all the Routes must be only on the app.js, for more info watch React Router nested routes 
+-------------------------------------------------------------
+let's say we have an array of items called servicesDate and each one of them holding an id and name then we can genarte links for all of them like this:
+ const links = servicesData.map(item=>{
+        return <Link to={`/services/${item._id}`} key={item._id}>{item.name}</Link>
+    })
+
+now we can just render : <div>{links}</div>
+then in app.js we set the Route like this : 
+            <Routes>
+		// :serviceId is the id for each link above and it's a param that we will use inside the <ServiceDetail /> component
+                <Route path="/services/:serviceId" element={<ServiceDetail />} /> 
+            </Routes>
+
+in <ServiceDetail />  component file : 
+
+import React from "react"
+import {useParams} from "react-router-dom"
+export default function ServiceDetail(props) {
+    const {serviceId} = useParams() //the original useParams() will be {serviceId: "1"} but here we will destructor to get only the id of this items
+ // scince we have the id mayabe we can call the api to get the information for this id form database, in this example we assume servicesData is the data
+ const service = servicesData.findById(serviceId)
+    return (
+        <div>
+            <h1>One Service Detail Page</h1>
+            <h3>{service.name} - ${service.price}</h3>
+        </div>
+    )
+}
+-----------------------------------------------------------
+useRouteMatch in react router is not very important but it can be used simplyfy a little bit :
+if we are in a componet url let's say /user then inside the componet we can destructor to get this url and use like this:
+const {path, url} = useRouteMatch()   // desctructor becasuse the useRouteMatch() will give us here {path: "/user", url: "/user", isExact: true, params: {}}
+now (optionally ) we can use the above varaibles to simple writing inside the same class ofcourse (otherwise the varaible will not work): 
+<Link to={`${url}/info`}>Profile Info</Link>  instead of <Link to={'/user/info'}>Profile Info</Link>
+<Routes><Route path={`${path}/info`} element={<Info/>} /> instead of <Switch><Route path={'/user/info'} element={<Info/>} />        
+------------------------------------------------------
+navigate() in react router is similar to redirect in node js, example: 
+
+import { useNavigate } from 'react-router-dom';
+const navigate = useNavigate();
+
+    function handleSubmit() {
+        setTimeout(() => { //After 2000 milisecond from submiting it will automatically go to /services 
+            navigate('/home');
+        }, 2000)
+    }
+------------------------------------------------------------------
+Redirect from react router is a little diffrent than redirect in node.js as here in react it's like this <Redirect /> and it's no used just to go to path like the useNavigate but instead Redirect is used in few situations like if the user is not logged in and tryed to go to a a page that only for logged in user , so it will be like this example if user is logged in then get hello else it will redirect immedatly to /login: 
+		<Route path="/private" element= {isLoggedIn ?  "hello" :  <Redirect to="/login" /> }>             
+----------------------------------------------------------------------
+Incase you installed the last project you should update the head as follow:
+<head>
+        <link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+---------------------------------------------------------------------------
+To prevent the user from able to see the code clearly in broswer for React create a file with extension .env (without name) then put inside GENERATE_SOURCEMAP=false then run the build 

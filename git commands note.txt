@@ -1,0 +1,31 @@
+1- create a new repository (git init)
+2- move files manulaly 
+3- open git bash
+4- first create new branch :
+	$ git checkout -b my-new-branch
+	This will create a new branch named "my-new-branch" and switch to it.
+5- keep track of all files:
+	$ git add -A
+
+6- commit the files that you just added by keeping track
+	$ git commit -m "Add files to be tracked"
+7- go to github and create new repository. after that you will find this command in the new page of reposiortu that can help you in uploading the local repository to be in  github. the commands is but ofcource a little diffrent depnd on account name and reposiotry name:
+	those command should be run in git bash locally ofcourse here the ddsdwdqewq is the repos name and Murtadha-Alzaki is my account and main is my 	local branch that we set up 
+
+	git remote add origin https://github.com/Murtadha-Alzaki/ddsdwdqewq.git    
+	git branch -M main
+	git push -u origin main
+
+
+
+
+
+
+-----------------------
+let say you make some changes in some files and not all of them then you can do that 
+1- specfit the changes files, (if you want all then use -A) but here we are choosing 2 files that have changes (app and packages)
+	git add app.js package.json
+2- commit chnages: 
+git commit -m "second version"
+
+3- 
