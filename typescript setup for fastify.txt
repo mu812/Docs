@@ -50,7 +50,7 @@
 
 8-  npm i -D concurrently nodemon
 
-9- update the main in package.json file to be "main": "dist/index.js"
+9- update the main in package.json file to be "main": "dist/app.js"
 
 10- update the scripts in the package.json file to be :  
 
